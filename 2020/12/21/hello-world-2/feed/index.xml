@@ -7,11 +7,11 @@
 	>
 <channel>
 	<title>
-	Comments for Lewd Momoko	</title>
-	<atom:link href="http://localhost/skillcrush/comments/feed/" rel="self" type="application/rss+xml" />
-	<link></link>
+	Comments on: Hello world!	</title>
+	<atom:link href="http://localhost/skillcrush/2020/12/21/hello-world-2/feed/" rel="self" type="application/rss+xml" />
+	<link>/2020/12/21/hello-world-2/</link>
 	<description>Just another WordPress site</description>
-	<lastBuildDate>Sat, 18 Sep 2021 19:59:21 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 21 Dec 2020 05:35:49 +0000</lastBuildDate>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
