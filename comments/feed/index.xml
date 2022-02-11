@@ -11,11 +11,11 @@
 	<atom:link href="http://localhost/skillcrush/comments/feed/" rel="self" type="application/rss+xml" />
 	<link></link>
 	<description>NSFW NFTS on WAX. Community Driven Project.</description>
-	<lastBuildDate>Fri, 14 Jan 2022 22:42:45 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 11 Feb 2022 23:27:08 +0000</lastBuildDate>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=5.8.3</generator>
+	<generator>https://wordpress.org/?v=5.9</generator>
 </channel>
 </rss>
