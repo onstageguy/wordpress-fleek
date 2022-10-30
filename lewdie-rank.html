@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Lewdie Rank</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,49 +22,85 @@
         background-color: black;
         color: white;
       }
-/* 
-      .elementor-heading-title {
-        color: #ff00d2;
-      }
-      .lewdierank-color-primary {
-        color: #ff00c8;
-      }
-      .lewdierank-color-secondary {
-        color: #ff00c8;
-      } */
     </style>
 
     <!-- KEEP THESE STYLES -->
     <style>
-      #lewdierank-container {
+      :root {
+        --lewdierank-bright-pink: #ff00c8;
+        --lewdierank-dark-pink: #930073;
+        --lewdierank-bright-purple: #6119a3;
+        --lewdierank-dark-purple: #3e1168;
+      }
+
+      #lewdierank-leaderboard-container {
+        position: relative;
+        width: auto;
+        max-width: 90vw;
+        margin: 80px auto 0 auto;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+      }
+
+      #lewdierank-leaderboard-table {
+        width: auto;
+        max-width: 90vw;
+        text-align: center;
+        color: white;
+        border-collapse:collapse
+      }
+
+      #lewdierank-leaderboard-table th, #lewdierank-leaderboard-table td {
+        padding: 5px 1vw;
+      }
+
+      #lewdierank-leaderboard-table thead {
+        background-color: var(--lewdierank-dark-purple);
+        font-weight: bold;
+      }
+
+      #lewdierank-leaderboard-table tbody tr:nth-child(even) {background: #C27BA0}
+      #lewdierank-leaderboard-table tbody tr:nth-child(odd) {background: #741B47}
+
+      #lewdierank-leaderboard-table tbody tr:hover {
+        background: var(--lewdierank-bright-pink);
+        cursor:pointer;
+      }
+
+      #lewdierank-lewdies-container {
+        position: relative;
         display: flex;
         flex-flow: row wrap;
         justify-content: center;
         align-items: flex-start;
         align-content: flex-start;
-        gap: 3vw 2vh;
+        gap: 30px 20px;
+        z-index: 1;
       }
 
-      #lewdierank-container a {
+      #lewdierank-lewdies-container a {
         text-decoration: none;
         color: inherit;
       }
 
-      #lewdierank-container a:hover {
+      #lewdierank-lewdies-container a:hover {
         text-decoration: underline;
       }
 
       .lewdierank-card {
         width: 250px;
         max-width: 38vw;
-        border: solid 2px #930073;
+        /* border: solid 2px #930073; */
+        border: solid 2px var(--lewdierank-dark-pink);
         border-radius: 10px;
         padding: 8px;
         cursor: pointer;
       }
 
       .lewdierank-card:hover {
-        border: solid 2px #ff00c8;
+        /* border: solid 2px #ff00c8; */
+        border: solid 2px var(--lewdierank-bright-pink);
 
         /* White Glow: */
         -webkit-box-shadow:0px 0px 27px 1px rgba(255,255,255,0.5);
@@ -88,7 +125,7 @@
       .lewdierank-card-overallrank, .lewdierank-card-unpackedrank {
         font-weight: 800;
         padding: 0 0 0 3px;
-        color: #ff00c8;
+        color: var(--lewdierank-bright-pink);
       }
 
       .lewdierank-card-owner {
@@ -110,13 +147,13 @@
         text-align: center;
         font-size: 5vw;
         font-weight: 400;   
-        color: #ff00c8;
+        color: var(--lewdierank-bright-pink);
       }
 
       #lewdierank-modal {
         display: none;
         position: fixed;
-        z-index: 1;
+        z-index: 100;
         padding-top: 100px;
         left: 0;
         top: 0;
@@ -134,7 +171,7 @@
         border: 1px solid #888;
         width: 80%;
         max-height: 84vh;
-        background: linear-gradient(.25turn, #3e1168, 30%, #6119a3);
+        background: linear-gradient(.25turn, var(--lewdierank-dark-purple), 30%, var(--lewdierank-bright-purple));
         display: flex;
         flex-flow: row wrap;
         justify-content: flex-start;
@@ -150,6 +187,7 @@
         z-index: 2;
         top: 105px;
         right: 10vw;
+        padding: 10px 20px;
         color: #aaaaaa;
         font-size: 3em;
         font-weight: bold;
@@ -200,7 +238,6 @@
 
       .lewdierank-data-table th, .lewdierank-data-table td {
         padding: 3px 0;
-        font-size: 1.15em;
       }
 
       .lewdierank-data-table thead {
@@ -242,22 +279,30 @@
         background-color: #674EA7;
       }
 
-      #filter-menu {
+      #lewdierank-filter-menu {
+        position: relative;
         display: none;
         width: 90%;
+        height: 40px;
         padding: 10px 5%;
-        margin: 0 auto;
+        margin: 0 auto 8px 0;       
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        overflow: visible;
+        z-index: 10;
+        gap: 15px;
       }
 
       /* Checkboxes */
-      .lewdierank-checkbox-container {
+      .lewdierank-pool-checkbox-container {
         display: block;
         position: relative;
         padding-left: 35px;
         margin-bottom: 12px;
         cursor: pointer;
         font-size: 22px;
-        color: #ff00c8;
+        color: var(--lewdierank-bright-pink);
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
@@ -265,7 +310,7 @@
       }
 
       /* Hide the browser's default checkbox */
-      .lewdierank-checkbox-container input {
+      .lewdierank-pool-checkbox-container input {
         position: absolute;
         opacity: 0;
         cursor: pointer;
@@ -274,7 +319,7 @@
       }
 
       /* Create a custom checkbox */
-      .lewdierank-checkmark {
+      .lewdierank-pool-checkmark {
         position: absolute;
         top: 0;
         left: 0;
@@ -284,29 +329,29 @@
       }
 
       /* On mouse-over, add a grey background color */
-      .lewdierank-checkbox-container:hover input ~ .lewdierank-checkmark {
+      .lewdierank-pool-checkbox-container:hover input ~ .lewdierank-pool-checkmark {
         background-color: #ccc;
       }
 
       /* When the checkbox is checked, add a pink background */
-      .lewdierank-checkbox-container input:checked ~ .lewdierank-checkmark {
-        background-color: #ff00c8;
+      .lewdierank-pool-checkbox-container input:checked ~ .lewdierank-pool-checkmark {
+        background-color: var(--lewdierank-dark-pink);
       }
 
       /* Create the checkmark/indicator (hidden when not checked) */
-      .lewdierank-checkmark:after {
+      .lewdierank-pool-checkmark:after {
         content: "";
         position: absolute;
         display: none;
       }
 
       /* Show the checkmark when checked */
-      .lewdierank-checkbox-container input:checked ~ .lewdierank-checkmark:after {
+      .lewdierank-pool-checkbox-container input:checked ~ .lewdierank-pool-checkmark:after {
         display: block;
       }
 
       /* Style the checkmark/indicator */
-      .lewdierank-checkbox-container .lewdierank-checkmark:after {
+      .lewdierank-pool-checkbox-container .lewdierank-pool-checkmark:after {
         left: 9px;
         top: 5px;
         width: 5px;
@@ -316,17 +361,6 @@
         -webkit-transform: rotate(45deg);
         -ms-transform: rotate(45deg);
         transform: rotate(45deg);
-      }
-
-      .lewdierank-rank-logo {
-        height: 100px;
-      }
-
-      .lewdierank-rank-logo-compact {
-        max-height: 80px;
-        max-width: 32%;
-        margin-top: -10px;
-        object-fit: contain;
       }
 
       #return-to-top-button {
@@ -347,15 +381,16 @@
       }
 
       #return-to-top-button:hover {
-        background-color: #ff00c8;
+        background-color: var(--lewdierank-bright-pink);
         color: white;
       }
 
-      #search-by-id-div {
-        width: auto;
+      #lewdierank-open-by-id-div {
+        display: flex;
+        flex-flow: row nowrap;
       }
 
-      #search-by-id-div input[type=text] {
+      #lewdierank-open-by-id-div input[type=text] {
         padding: 10px;
         font-size: 17px;
         border: 1px solid grey;
@@ -364,15 +399,15 @@
         background: #f1f1f1;
       }
 
-      #search-by-id-div input[type=text] {
-        border-color: #ff00c8;
+      #lewdierank-open-by-id-div input[type=text] {
+        border-color: var(--lewdierank-bright-pink);
       }
 
-      #search-by-id-div button {
+      #lewdierank-open-by-id-div button {
         float: left;
         width: 40px;
         padding: 10px;
-        background: #930073;
+        background: var(--lewdierank-dark-pink);
         color: white;
         font-size: 17px;
         border: 1px solid grey;
@@ -380,39 +415,252 @@
         cursor: pointer;
       }
 
-      #search-by-id-div button:hover {
-        background: #ff00c8;
+      #lewdierank-open-by-id-div button:hover {
+        background: var(--lewdierank-bright-pink);
+      }
+
+      #lewdierank-logo-bar {
+        width: 95%;
+        padding: 0 3.5%;
+        display: flex;        
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .lewdierank-momoko-logo {
+        width: 26vw;
+        max-height: 70px;
+        object-fit: contain;
+      }
+
+      .lewdierank-empty-logo {
+        width: 26vw;
+        max-height: 70px;
+        object-fit: contain;
+      }
+
+      .lewdierank-rank-logo {
+        max-width: 44vw;
+        max-height: 100px;
+        padding: 0 4vw;
+        object-fit: contain;
+      }
+
+      .lewdierank-rank-logo-compact {
+        max-height: 80px;
+        max-width: 32%;
+        margin-top: -10px;
+        object-fit: contain;
+      }
+
+      #lewdierank-page-tabs-bar {
+        display: none;
+        width: 100%;
+        margin-bottom: 12px;
+        color: lightgrey;        
+      }
+
+      #lewdierank-page-tabs-container {
+        width: 90%;
+        margin: 0 auto;        
+        display: flex;        
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: flex-start;
+        
+      }
+
+      .lewdierank-page-tab {
+        margin-top: 3px;
+        font-size: 1.4em;
+        padding: 10px 25px;
+        cursor: pointer;
+        border-radius: 0 10px 0 0;
+        border-bottom: 1px solid lightgrey;
+      }
+
+      .lewdierank-page-tab:hover {
+        color: white;
+        background-color: var(--lewdierank-bright-pink);
+        border-top: none;
+        border-bottom: 3px solid var(--lewdierank-bright-pink);
+      }
+
+      .lewdierank-page-tab-active {
+        color: var(--lewdierank-bright-pink);
+        border-bottom: 3px solid var(--lewdierank-bright-pink);
+      }
+
+      .lewdierank-page-tab-empty {
+        flex-grow: 1;
+        border-bottom: 1px solid lightgrey;
+      }
+
+      #lewdierank-search-div {
+        position: relative;
+        display: flex;
+        flex-flow: row nowrap;
+      }
+
+      #lewdierank-search-close-button {
+        display: none;
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        right: 52px;
+        padding: 8.5px 15px;
+        background-color: #999;
+        border-left: 1px solid #777;
+        color: #333;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      #lewdierank-search-close-button:hover,
+      #lewdierank-search-close-button:focus {
+        color: white;
+        background-color: red;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      #lewdierank-search-textbox, #lewdierank-search-button {
+        border: 1px solid transparent;
+        background-color: #f1f1f1;
+        padding: 6px;
+        
+      }
+
+      #lewdierank-search-textbox {
+        background-color: #f1f1f1;
+        width: 800px;
+        font-size: 22px;
+      }
+
+      #lewdierank-search-button {
+        background-color: var(--lewdierank-dark-pink);
+        color: #fff;
+        cursor: pointer;
+        padding: 0 15px;
+        font-size: 20px;
+      }
+
+      #lewdierank-search-button:hover {
+        background-color: var(--lewdierank-bright-pink);
+      }
+
+      .lewdierank-search-autocomplete-items {
+        position: absolute;
+        color: var(--lewdierank-bright-pink);
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+      }
+
+      .lewdierank-search-autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff; 
+        border-bottom: 1px solid #d4d4d4; 
+      }
+
+      /*when hovering an item:*/
+      .lewdierank-search-autocomplete-items div:hover {
+        background-color: #e9e9e9; 
+      }
+
+      #lewdierank-open-by-id-textbox {
+        max-width: 80px;
+        font-size: 22px;
+        text-align: center;
+      }
+
+      /*when navigating through the items using the arrow keys:*/
+      .autocomplete-active {
+        background-color: var(--lewdierank-bright-pink) !important; 
+        color: #ffffff; 
+      }
+
+      /* Hide the spin buttons that browsers add to integer input fields */
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
       }
     </style>
   </head>
   <body>
-    <div style="width:100%; text-align:center;">
-      <img class="lewdierank-rank-logo" src='https://ipfs.hivebp.io/ipfs/QmbtA3tCSHLjniGVKACZruhtiqV6cXNxYGeppf129hpxzD' />
+    <div id="lewdierank-logo-bar">
+        <a href="https://lewdmomoko.com">
+          <img class="lewdierank-momoko-logo" src="https://lewdmomoko.com/wp-content/uploads/2021/09/logo-2-536x77.png" alt="LewdMomoko.com" />       
+        </a>
+      <a href="https://lewdmomoko.com/lewdie-rank.html">
+        <img class="lewdierank-rank-logo" src='https://ipfs.hivebp.io/ipfs/QmbtA3tCSHLjniGVKACZruhtiqV6cXNxYGeppf129hpxzD' alt="Lewdie Rank" />
+      </a>
+      <!-- <img class="lewdierank-empty-logo" src='https://ipfs.hivebp.io/ipfs/QmbtA3tCSHLjniGVKACZruhtiqV6cXNxYGeppf129hpxzD' alt="Lewdie Rank" /> -->
+      <div class="lewdierank-empty-logo"></div>
     </div>
 
     
     <button id="return-to-top-button" onclick="returnToTop()" title="Go to top">
-      <!-- Top -->
-      <!-- <i class="fa-solid fa-square-up"></i> -->
       <i class="fas fa-arrow-up"></i>
     </button>
 
-    <div id="filter-menu">
-      <div id="search-by-id-div">
-        <input id="search-by-id-textbox" type="text" placeholder="#1-555">
-        <button onClick="searchById()"><i class="fa-solid fa-search"></i></button>
+    <div id="lewdierank-page-tabs-bar">
+      <div id="lewdierank-page-tabs-container">
+        <div id="lewdierank-page-tab-lewdies" class="lewdierank-page-tab" onclick="loadPage('lewdies');">Lewdies</div>
+        <div id="lewdierank-page-tab-leaderboard" class="lewdierank-page-tab" onclick="loadPage('leaderboard');">Leaderboard</div>
+        <div class="lewdierank-page-tab-empty"></div>
+      </div>
+    </div>
+
+    <!-- Start of Lewdies Page -->
+    <div id="lewdierank-lewdies-page" style="display:none;">
+    <div id="lewdierank-filter-menu">
+      <div id="lewdierank-open-by-id-div">
+        <input id="lewdierank-open-by-id-textbox" type="number" min="1" max="555" maxlength="3" placeholder="#1-555"
+            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+        <button onClick="openById()">
+          <i class="fa-solid fa-up-right-from-square"></i>
+        </button>
       </div>
 
-      <div style="float:right;">
-        <label class="lewdierank-checkbox-container">Include Pool?
-          <input id="lewdierank-checkbox" type="checkbox" checked="checked">
-          <span class="lewdierank-checkmark"></span>
+      <div id="lewdierank-search-div">
+        <div id="lewdierank-search-close-button" onclick="clearSearch()">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <input id="lewdierank-search-textbox" type="search" placeholder="Search by trait, name or account">
+        <button id="lewdierank-search-button" onClick="performSearch()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+
+      <div style="padding-top:5px;">
+        <label class="lewdierank-pool-checkbox-container">
+          <span class="lewdierank-pool-checkbox-label-text">Include Pool?</span>
+          <input id="lewdierank-pool-checkbox" type="checkbox" checked="checked">
+          <span class="lewdierank-pool-checkmark"></span>
         </label>
       </div>
     </div>
 
     <div id="lewdierank-modal" onclick="hideModal();">
-      <div id="lewdierank-modal-close-button" onclick="hideModal()"><i class="fa-solid fa-xmark"></i></div> 
+      <div id="lewdierank-modal-close-button" onclick="hideModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </div> 
       <div id="lewdierank-modal-content">
         <div id="lewdierank-modal-image-container"></div>
         <div id="lewdierank-stats-container">
@@ -555,7 +803,13 @@
     </div>
 
     <!-- Lewdie Cards get populated here -->
-    <div id="lewdierank-container"></div>
+    <div id="lewdierank-lewdies-container"></div>
+  </div> <!-- End of Lewdies Page -->
+
+    <!-- Start of Leaderboard Page -->
+    <div id="lewdierank-leaderboard-page" style="display:none;">
+      <div id="lewdierank-leaderboard-container"></div>
+    </div> <!-- End of Leaderboard Page -->
 
     <div id="lewdierank-svg-loading" style="width:100%; text-align:center;">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: rgb(0, 0, 0, 0); display: block; shape-rendering: auto;" width="384px" height="384px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
@@ -616,8 +870,14 @@
     </div>
 
     <script>
+      const poolAddress = 'neftyblocksp';      
+      const isTesting = document.location.hash !== document.location.hash.replace("testing=true");
+      let ownerResults = [];
+      let leaderboardStats = [];
+
+      // API Settings
       let apiFailedAttempts = 0;
-      let apiEndpoints = [      
+      let apiEndpoints = [
         'wax.api.atomicassets.io',
         'aa-api-wax.eosauthority.com',
         'atomic.hivebp.io',
@@ -625,8 +885,7 @@
         'wax.eosusa.io',
         'wax.blokcrafters.io'
         //'atomic.wax.io',
-      ];
-      let ownerResults = [];
+      ];      
 
       // Choose a random starting endpoint so that all the traffic isn't going to a single endpoint
       // If an API call fails, the index will be increased and the API call will be tried again
@@ -642,17 +901,17 @@
         let overallRankDisplayStyle = 'display:block;';
         let unpackedRankDisplayStyle = 'display:none;';
 
-        // Create the Lewdie cards. The rank and owner will be populated later.
+        // Create the Lewdie cards
         let lewdieHtml = "";
         database.map((lewdie) => {
            let unpackedClass = " lewdierank-card-unpacked";
 
-           if (lewdie.unpackedRank != null) {
-            // Lewdie has been opened to don't mark it as being unpacked.
+           if (lewdie.unpackedRank !== null) {
+            // Lewdie has been opened so don't mark it as being unpacked.
             unpackedClass = '';
            }
 
-            const lewdieCard = "<div class='lewdierank-card" + unpackedClass + "' onclick='showLewdie(" + lewdie.edition + ")'>"
+            const lewdieCard = "<div id='lewdierank-card-" + lewdie.edition + "' class='lewdierank-card" + unpackedClass + "' onclick='showLewdie(" + lewdie.edition + ")'>"
             + "<div class='lewdierank-card-top'>"
             + "<div class='lewdierank-card-overallrank' style='" + overallRankDisplayStyle + "'>#" + lewdie.Rank + "</div>"
             + "<div class='lewdierank-card-unpackedrank' style='" + unpackedRankDisplayStyle + "'>#" + lewdie.unpackedRank + "</div>"
@@ -668,7 +927,41 @@
         });
 
         // Add the html to the container
-        $("#lewdierank-container").html(lewdieHtml);
+        $("#lewdierank-lewdies-container").html(lewdieHtml);
+
+        // Create the Leaderboard
+        let leaderCount = 0;
+        let leaderboardHtml = "<table id='lewdierank-leaderboard-table'>"
+        + "<thead><tr>"
+        + "<th>Rank</th>"
+        + "<th>Account</th>"
+        + "<th>#Lewdies</th>"
+        + "<th>Total Score</th>"
+        + "</tr></thead>";
+        + "<tbody>";
+
+        leaderboardStats.map((leader) => {
+           let thisLeaderRank = "N/A";
+
+           if (leader.owner !== poolAddress) {
+            leaderCount += 1;
+            thisLeaderRank = "#" + leaderCount;
+           }
+
+            const leaderRow = "<tr onclick='showAccount(&quot;" + leader.owner + "&quot;);'>"
+            + "<td>" + thisLeaderRank + "</td>"
+            + "<td>" + leader.owner + "</td>"
+            + "<td>" + leader.count + "</td>"
+            + "<td>" + leader.score.toFixed(2) + "</td>"
+            + "</tr>";
+
+            leaderboardHtml += leaderRow;
+        });
+
+        leaderboardHtml +=  "</tbody></table>";
+
+        // Add the html to the container
+        $("#lewdierank-leaderboard-container").html(leaderboardHtml);
 
         // Adjust the font size to fit the screen resolution
         $( window ).resize(function() {
@@ -717,35 +1010,29 @@
         };
 
         // Add filter event triggers
-        $('#lewdierank-checkbox').change(function() {
-          if(this.checked) {
-            // Show all of the Lewdies
-            $(".lewdierank-card-overallrank").css("display", "block");
-            $(".lewdierank-card-unpackedrank").css("display", "none");
-            $(".lewdierank-card-unpacked").show();
-          }
-          else {
-            // Show only the Lewdies that have been unpacked
-            $(".lewdierank-card-overallrank").css("display", "none");
-            $(".lewdierank-card-unpackedrank").css("display", "block");
-            $(".lewdierank-card-unpacked").hide();
-          }      
+        $('#lewdierank-pool-checkbox').change(function() {
+          updatePoolSetting(this.checked); 
         });
 
         // Reset the filters
-        $("#search-by-id-textbox").val("");
-        $("#lewdierank-checkbox").prop("checked", true);
+        $("#lewdierank-open-by-id-textbox").val("");
+        $("#lewdierank-search-textbox").val("");
+        $("#lewdierank-pool-checkbox").prop("checked", true);
 
-        // Show the filter menu and get the applicable filter values
-        $("#filter-menu").css("display", "inline-block");
+        // Show the page tabs and filter menu
+        $("#lewdierank-page-tabs-bar").css("display", "flex");
+        $("#lewdierank-filter-menu").css("display", "flex");
 
         // Enter key event listener for search by ID
-        $('#search-by-id-textbox').keypress(function(event){
+        $('#lewdierank-open-by-id-textbox').keypress(function(event){
           var keycode = (event.keyCode ? event.keyCode : event.which);
           if(keycode == '13'){
-            searchById();
+            openById();
           }
         });
+
+        // Initialize the autocomplete function on the search input
+        autocomplete(document.getElementById("lewdierank-search-textbox"), autocompleteArray);
 
         // Hide the loading imageUrl
         $("#lewdierank-svg-loading").hide();
@@ -754,13 +1041,44 @@
         loadFilters();
       }
 
+      // Update pool setting
+      function updatePoolSetting(includePool = null, doSearch = true) {
+        // Get the pool setting from the hash string if it wasn't passed in
+        if(includePool === null) {
+          // default to true unless otherwise specified in the has string
+          includePool = true;
+          if (getHashValue("pool") === "false") {
+            includePool = false;
+          }
+        }
+
+        // Show and hide cards as needed
+        if(includePool) {
+          // Show all of the Lewdies
+          $("#lewdierank-pool-checkbox").prop("checked", true);
+          $(".lewdierank-card-overallrank").css("display", "block");
+          $(".lewdierank-card-unpackedrank").css("display", "none");
+          setHash("pool", true);
+        }
+        else {
+          // Show only the Lewdies that have been unpacked
+          $(".lewdierank-card-overallrank").css("display", "none");
+          $(".lewdierank-card-unpackedrank").css("display", "block");
+          setHash("pool", false);
+        }
+
+        if (doSearch) {
+          performSearch();
+        }        
+      }
+
       // Check if the screen size is compact or large, used to determine how to scale things
       function isCompactView() {
         let isCompact = true;
         const cardWidth = $(".lewdierank-card:first").width();
 
-        // If the screen is wide enough to display 4 Lewdies then it's not compact
-        if ($(window).width() > (cardWidth ?? 0) * 4) {
+        // If the screen is wide enough to display 5 Lewdies then it's not compact
+        if ($(window).width() > (cardWidth ?? 0) * 5) {
           isCompact = false;
         }
 
@@ -772,8 +1090,8 @@
         let isXl = false;
         const cardWidth = $(".lewdierank-card:first").width();
 
-        // If the screen is wide enough to display 6 Lewdies then the screen is extra large
-        if ($(window).width() > (cardWidth ?? 0) * 6) {
+        // If the screen is wide enough to display 7 Lewdies then the screen is extra large
+        if ($(window).width() > (cardWidth ?? 0) * 7) {
           isXl = true;
         }
 
@@ -783,11 +1101,13 @@
       function resizeContent() {
         const cardWidth = $(".lewdierank-card:first").width();
         const isCompact = isCompactView();
+        const isXl = isXlView();
 
         $(".lewdierank-card-overallrank").css("fontSize", (cardWidth * .115) + "px");
         $(".lewdierank-card-unpackedrank").css("fontSize", (cardWidth * .115) + "px");
         $(".lewdierank-card-owner").css("fontSize", (cardWidth * .095) + "px");
         $(".lewdierank-card-name").css("fontSize", (cardWidth * .12) + "px");
+        $(".lewdierank-pool-checkbox-label-text").css("fontSize", (cardWidth * .095) + "px");
 
         // Calculate new modal image size
         let newImageSize = $(window).width() * .33;
@@ -797,6 +1117,20 @@
           // Screen size is small so make the image take up most of the width
           newImageSize = $(window).width() * .8;
           newStatSize = $(window).width() * .8;
+          $(".lewdierank-pool-checkbox-label-text").html("Pool?");
+          $("#lewdierank-modal-content").css("fontSize", (cardWidth * .095) + "px");
+          $("#lewdierank-search-textbox").css("max-width", "22vw");
+          $("#lewdierank-leaderboard-container").css("fontSize", "22px");
+        }
+        else {
+          $(".lewdierank-pool-checkbox-label-text").html("Include Pool?");
+          $("#lewdierank-modal-content").css("fontSize", (cardWidth * .08) + "px");
+          $("#lewdierank-search-textbox").css("max-width", "40vw");
+          $("#lewdierank-leaderboard-container").css("fontSize", "24px");
+        }
+
+        if (isXl) {
+          $("#lewdierank-modal-content").css("fontSize", (cardWidth * .11) + "px");
         }
 
         $("#lewdierank-modal-image-container").css("width", newImageSize + "px");
@@ -891,8 +1225,8 @@
         showModal();
       }
 
-      function searchById() {
-        let searchId = $("#search-by-id-textbox").val();
+      function openById() {
+        let searchId = $("#lewdierank-open-by-id-textbox").val();
 
         if (searchId && Number.isInteger(+searchId) && Number(searchId) <= 555) {
           showLewdie(Number(searchId));
@@ -901,7 +1235,7 @@
           setHash("id", searchId);
 
           // Clear the search box
-          $("#search-by-id-textbox").val("");
+          $("#lewdierank-open-by-id-textbox").val("");
         }
       }
 
@@ -926,9 +1260,9 @@
       }
 
       function setHash(key, value) {
-        var hashArray = getHashArray();
-        var keyFound = false;
-        var hashString = '';
+        let hashArray = getHashArray();
+        let keyFound = false;
+        let hashString = '';
 
         // Create the hashString
         for (let i = 0; i < hashArray.length; i++) {
@@ -956,46 +1290,24 @@
         }
 
         // Write the hashString to the url
-        window.location.hash = "#" + hashString;
-      }
-
-      function loadFilters() {
-        var hashArray = getHashArray();
-
-        for (let i = 0; i < hashArray.length; i++) {
-          // Check if an ID was passed in and if so, load it
-          if (hashArray[i][0] == "id") {
-            $("#search-by-id-textbox").val(hashArray[i][1]);
-            searchById();
-          }
-        }
+        window.location.hash = "#" + encodeURI(hashString.toLowerCase());
       }
 
       function getHashArray() {
-        var anchor = document.location.hash.substring(1);
+        let hashArray = [];
+        const anchor = decodeURI(document.location.hash.substring(1));
 
-        const hashArray = anchor.split("&").map(function(item) {
-          return item.trim();
-        });
+        if (anchor !== "" && anchor !== anchor.replace("=", "")) {
+          hashArray = anchor.split("&").map(function(item) {
+            return item.trim();
+          });
 
-        for (let i = 0; i < hashArray.length; i++) {
-          hashArray[i] = hashArray[i].split("=");
-        }
-
-        return hashArray;
-      }
-
-      function isTesting() {
-        let isTest = false;
-        var hashArray = getHashArray();
-
-        for (let i = 0; i < hashArray.length; i++) {
-          if (hashArray[i][0] == "testing" && hashArray[i][1] === "true") {
-            isTest = true;
+          for (let i = 0; i < hashArray.length; i++) {
+            hashArray[i] = hashArray[i].split("=");
           }
         }
 
-        return isTest;
+        return hashArray;
       }
 
       async function getOwners() {
@@ -1017,7 +1329,6 @@
             let unpackedCount = 0;
             let previousScore = 0;
             let previousRank = 0;
-            let poolAddress = 'neftyblocksp';
 
             // Loop through the database and get the extra info for all of the lewdies
             for (let i = 0; i < database.length; i++) {
@@ -1025,8 +1336,11 @@
 
               // Override some values for testing
               // TODO: Remove this testing block after testing is complete
-              if (isTesting()) {
+              if (isTesting) {
                 if (database[i].name == 'Lewdie-#463') {
+                  ownerItem.owner = 'composerhodl';
+                }
+                if (database[i].name == 'Lewdie-#515') {
                   ownerItem.owner = 'composerhodl';
                 }
                 if (database[i].name == 'Lewdie-#211') {
@@ -1066,6 +1380,22 @@
                 previousRank = unpackedRank;
               }
 
+              // Create the trait string which will be used when a search term is entered into the search box
+              let traitString = "Account: " + ownerItem.owner
+              + "; Name: " + database[i].name
+              + "; Backcarry: " + database[i].backcarry
+              + "; Background: " + database[i].background
+              + "; Clothes: " + database[i].clothes
+              + "; Earrings: " + database[i].earrings
+              + "; Eyebrows: " + database[i].eyebrows
+              + "; Eyes: " + database[i].eyes
+              + "; Eyewear: " + database[i].eyewear
+              + "; Hair: " + database[i].hair
+              + "; Headwear: " + database[i].headwear
+              + "; Mouth: " + database[i].mouth
+              + "; Necklace: " + database[i].necklace
+              + "; Skin: " + database[i].skin
+
               // If the owner information was found, copy all the data from the database record
               // and copy in the fields we need from the owner record
               if (ownerItem) {
@@ -1074,6 +1404,7 @@
                   owner: ownerItem.owner,
                   unpackedRank: unpackedRank,
                   asset_id: ownerItem.asset_id,
+                  traitString: traitString.toLowerCase(),
                 })
               }
             }
@@ -1081,6 +1412,28 @@
             // Set the database equal to the merged results
             database = merged;
             merged = [];
+
+            // Get the unique list of owners from the database
+            const ownerAccounts = getUniqueArray(database, "owner");
+
+            // Get the leaderboard stats and add the accounts to the autocomplete array
+            for (let i = 0; i < ownerAccounts.length; i++) {
+              autocompleteArray.push("Account: " + ownerAccounts[i]);
+
+              let ownerCount = 0;
+              let totalScore = 0;
+              for (let j = 0; j < database.length; j++) {
+                if (database[j].owner === ownerAccounts[i]) {
+                  ownerCount += 1;
+                  totalScore += database[j].TotalScore;
+                }
+              }
+
+              leaderboardStats[i] = { owner: ownerAccounts[i], count: ownerCount, score: totalScore };
+            }
+
+            // Sort the leaderboard stats
+            leaderboardStats.sort((a, b) => b.score - a.score);
 
             // Initialize the page now that all the data has been loaded.
             init();
@@ -1109,6 +1462,18 @@
         });
       }
 
+      function getUniqueArray(array, key) {
+        let uniqueSet = new Set();
+        array.forEach(function(item) {
+            if (item.hasOwnProperty(key)) {
+                uniqueSet.add(item[key]);
+            }
+        });
+
+        let result = Array.from(uniqueSet).sort((a, b) => a - b);
+        return result;
+      }
+
       // Call the getOwners function immediately since it takes a long time to load
       getOwners();
 
@@ -1122,6 +1487,1087 @@
         removeHash("id");
       }
 
+      function loadFilters() {
+        let hashArray = getHashArray();
+        let pageName = 'lewdies';
+
+        for (let i = 0; i < hashArray.length; i++) {
+          // Check if an ID was passed in and if so, load it
+          if (hashArray[i][0] === "id") {
+            $("#lewdierank-open-by-id-textbox").val(hashArray[i][1]);
+            openById();
+          }
+
+          // Check if a pool value was passed in and if so, toggle the pool setting
+          if (hashArray[i][0] === "pool") {
+            if (hashArray[i][1] === "true") {
+              $("#lewdierank-pool-checkbox").prop("checked", true);
+              updatePoolSetting(true, false);
+            }
+            else {
+              $("#lewdierank-pool-checkbox").prop("checked", false);
+              updatePoolSetting(false, false);
+            }
+          }
+
+          // Check if an search term was passed in and if so, run the search
+          if (hashArray[i][0] === "search") {
+            $("#lewdierank-search-textbox").val(hashArray[i][1]);
+            $("#lewdierank-search-close-button").css("display", "block");
+            // Search will be performed when the page is loaded
+          }
+
+          // Check if the page was passed in
+          if (hashArray[i][0] === "page") {
+            pageName = hashArray[i][1];
+          }
+        }
+
+        // Load the applicable page
+        loadPage(pageName);
+      }
+
+      // Get a specific hash value
+      function getHashValue(key) {
+        let hashArray = getHashArray();
+
+        for (let i = 0; i < hashArray.length; i++) {
+          if (hashArray[i][0] === key) {
+            return hashArray[i][1];
+          }
+        }
+
+        return null;
+      }
+
+      // Display the applicable page
+      function loadPage(pageName) {
+        $(".lewdierank-page-tab").removeClass("lewdierank-page-tab-active");
+
+        if (pageName.toLowerCase() === 'leaderboard') {
+          $("#lewdierank-lewdies-page").css("display", "none");
+          $("#lewdierank-leaderboard-page").css("display", "block");
+          $("#lewdierank-page-tab-leaderboard").addClass("lewdierank-page-tab-active");
+        }
+        else {
+          $("#lewdierank-lewdies-page").css("display", "block");
+          $("#lewdierank-leaderboard-page").css("display", "none");
+          $("#lewdierank-page-tab-lewdies").addClass("lewdierank-page-tab-active");
+          updatePoolSetting();
+          performSearch();
+        }
+        
+        setHash("page", pageName.toLowerCase());
+        resizeContent();
+      }
+
+      // Show all the assets owned by the specified account
+      function showAccount(accountName) {
+        // Include the pool if the poolAddress was passed in
+        if (accountName === poolAddress) {
+          setHash("pool", true);
+        }        
+
+        // Update the search settings
+        $("#lewdierank-search-textbox").val("Account: " + accountName);
+        $("#lewdierank-search-close-button").css("display", "block");
+        setHash("search", "account: " + accountName);
+
+        // Load the lewdies page which will handle displaying the correct lewdies
+        loadPage("lewdies");
+      }
+
+      function performSearch() {
+        const searchTerm = $("#lewdierank-search-textbox").val().trim().toLowerCase();
+        const includePool = $('#lewdierank-pool-checkbox').is(':checked');
+
+        // Close the autocomplete list
+        var x = document.getElementsByClassName("lewdierank-search-autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+          x[i].parentNode.removeChild(x[i]);
+        }
+
+        // Add the search string to the hash
+        if (searchTerm.length > 0) {
+          setHash("search", searchTerm);
+        }
+        else {
+          removeHash("search");
+        }
+
+        // Perform the search
+        for (let i = 0; i < database.length; i++) {
+          if (database[i].traitString.indexOf(searchTerm) >= 0 && (includePool || database[i].owner != poolAddress)) {
+            $("#lewdierank-card-"+database[i].edition).show();
+          }
+          else {
+            $("#lewdierank-card-"+database[i].edition).hide();
+          }
+        }
+      }
+
+      function clearSearch() {
+        $("#lewdierank-search-textbox").val("");
+        $("#lewdierank-search-close-button").css("display", "none");
+        performSearch();
+      }
+
+      // Add custom styled AutoComplete to an input field
+      // Credit: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_autocomplete
+      function autocomplete(inp, arr) {
+        /*the autocomplete function takes two arguments,
+        the text field element and an array of possible autocompleted values:*/
+        var currentFocus;
+        /*execute a function when someone writes in the text field:*/
+        inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            /*close any already open lists of autocompleted values*/
+            closeAllLists();
+            if (!val) {
+              $("#lewdierank-search-close-button").css("display", "none");
+              return false;
+            }
+            $("#lewdierank-search-close-button").css("display", "block");
+            currentFocus = -1;
+            /*create a DIV element that will contain the items (values):*/
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "lewdierank-search-autocomplete-items");
+            /*append the DIV element as a child of the autocomplete container:*/
+            this.parentNode.appendChild(a);
+            /*for each item in the array...*/
+            for (i = 0; i < arr.length; i++) {
+              /*check if the item contains the same letters as the text field value:*/
+              if (arr[i].toUpperCase() !== arr[i].toUpperCase().replace(val.toUpperCase())) {
+                /*create a DIV element for each matching element:*/
+                b = document.createElement("DIV");
+                /*make the matching letters bold:*/
+                let startc = arr[i].toUpperCase().indexOf(val.toUpperCase());
+                let endc = startc + val.length;
+                if (startc === 0) {
+                  b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                  b.innerHTML += arr[i].substr(val.length);
+                }
+                else {
+                  b.innerHTML = arr[i].substr(0, startc);
+                  b.innerHTML += "<strong>" + arr[i].substr(startc, val.length) + "</strong>";
+                  b.innerHTML += arr[i].substr(endc);
+                }
+                /*insert a input field that will hold the current array item's value:*/
+                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function(e) {
+                    /*insert the value for the autocomplete text field:*/
+                    inp.value = this.getElementsByTagName("input")[0].value;
+                    /*close the list of autocompleted values,
+                    (or any other open lists of autocompleted values:*/
+                    closeAllLists();
+                    performSearch();
+                });
+                a.appendChild(b);
+              }
+            }
+        });
+        /*execute a function presses a key on the keyboard:*/
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+              /*If the arrow DOWN key is pressed,
+              increase the currentFocus variable:*/
+              currentFocus++;
+              /*and and make the current item more visible:*/
+              addActive(x);
+            } else if (e.keyCode == 38) { //up
+              /*If the arrow UP key is pressed,
+              decrease the currentFocus variable:*/
+              currentFocus--;
+              /*and and make the current item more visible:*/
+              addActive(x);
+            } else if (e.keyCode == 13) {
+              /*If the ENTER key is pressed, prevent the form from being submitted,*/
+              e.preventDefault();
+              if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
+              }
+              performSearch();
+            }
+        });
+        function addActive(x) {
+          /*a function to classify an item as "active":*/
+          if (!x) return false;
+          /*start by removing the "active" class on all items:*/
+          removeActive(x);
+          if (currentFocus >= x.length) currentFocus = 0;
+          if (currentFocus < 0) currentFocus = (x.length - 1);
+          /*add class "autocomplete-active":*/
+          x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+          /*a function to remove the "active" class from all autocomplete items:*/
+          for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+          }
+        }
+        function closeAllLists(elmnt) {
+          /*close all autocomplete lists in the document,
+          except the one passed as an argument:*/
+          var x = document.getElementsByClassName("lewdierank-search-autocomplete-items");
+          for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+              x[i].parentNode.removeChild(x[i]);
+            }
+          }
+        }
+        /*execute a function when someone clicks in the document:*/
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+
+            if(getHashValue("page") === "lewdies" && $("#lewdierank-search-textbox").val().length > 0) {
+              performSearch();
+            }            
+        });
+      }
+
+
+  /*An array containing all the country names in the world:*/
+  var autocompleteArray = [
+    'Backcarry: Angel Wings Black',
+    'Backcarry: Angel Wings Magenta',
+    'Backcarry: Angel Wings Red',
+    'Backcarry: Angel Wings Regular',
+    'Backcarry: AR Blue Camo',
+    'Backcarry: AR Purple Camo',
+    'Backcarry: AR Regular',
+    'Backcarry: Demon Wings Blue',
+    'Backcarry: Demon Wings Green',
+    'Backcarry: Demon Wings Purple',
+    'Backcarry: Demon Wings Regular',
+    'Backcarry: Katana Blue',
+    'Backcarry: Katana Pink',
+    'Backcarry: Katana Regular',
+    'Backcarry: None',
+    'Background: 551',
+    'Background: 552',
+    'Background: 553',
+    'Background: 554',
+    'Background: 555',
+    'Background: Aura Purple-Green',
+    'Background: Aura Red-Blue',
+    'Background: Aura Yellow-Orange',
+    'Background: Blue',
+    'Background: Cyan',
+    'Background: Gray',
+    'Background: Green',
+    'Background: Hearts Green',
+    'Background: Hearts Pink',
+    'Background: Hearts Yellow',
+    'Background: Magenta',
+    'Background: Peach',
+    'Background: Red',
+    'Background: Stars Purple',
+    'Background: Stars Teal',
+    'Background: Stripes Pink-Blue',
+    'Background: Stripes Yellow-Purple',
+    'Background: Yellow',
+    'Clothes: Bikini Armour Gold',
+    'Clothes: Bikini Blue-Pink',
+    'Clothes: Bikini Pink-Yellow',
+    'Clothes: Bikini Red-Green',
+    'Clothes: Blazer Magenta',
+    'Clothes: Blazer Ochre',
+    'Clothes: Blazer Teal',
+    'Clothes: Bra Cyan',
+    'Clothes: Bra Orange',
+    'Clothes: Bra Pink',
+    'Clothes: Cami Black',
+    'Clothes: Cami Blue',
+    'Clothes: Cami Green',
+    'Clothes: Cami Pink',
+    'Clothes: Cami White',
+    'Clothes: Cami Yellow',
+    'Clothes: Camo B00n',
+    'Clothes: Camo Send Nudes',
+    'Clothes: Crop Top 4ArtSake',
+    'Clothes: Crop Top Koncept',
+    'Clothes: Crop Top Magenta',
+    'Clothes: Crop Top Puft',
+    'Clothes: Crop Top Send Nudes',
+    'Clothes: Crop Top Toad',
+    'Clothes: Crop Top Token Girls',
+    'Clothes: Crop Top Ultra Rare',
+    'Clothes: Highschool Uniform',
+    'Clothes: Nude',
+    'Clothes: Pasties Band Blue',
+    'Clothes: Pasties Band Magenta',
+    'Clothes: Pasties Heart Cyan',
+    'Clothes: Pasties Heart Purple',
+    'Clothes: Pasties X Green',
+    'Clothes: Pasties X Yellow',
+    'Clothes: Rabbit Onesie',
+    'Clothes: Retro Top Blue-Lime',
+    'Clothes: Retro Top Purple-Mint',
+    'Clothes: Retro Top Raspberry-Sky',
+    'Clothes: Tee Abstract Green',
+    'Clothes: Tee Abstract Magenta',
+    'Clothes: Tee Animal Print Purple',
+    'Clothes: Tee Animal Print Red',
+    'Clothes: Tee Bloody',
+    'Clothes: Tee Blue',
+    'Clothes: Tee Camo Green',
+    'Clothes: Tee Camo Purple',
+    'Clothes: Tee Green',
+    'Clothes: Tee Modern',
+    'Clothes: Tee Mosaic Blue',
+    'Clothes: Tee Mosaic Magenta',
+    'Clothes: Tee Paint splatter',
+    'Clothes: Tee Pink',
+    'Clothes: Tee Stars Blue',
+    'Clothes: Tee Stars Magenta',
+    'Clothes: Tee Tribal',
+    'Clothes: Tee White',
+    'Clothes: Tee Yellow',
+    'Clothes: Top Heart Cutout',
+    'Clothes: Yakuza Punk',
+    'Earrings: Crystal',
+    'Earrings: Cute Stack',
+    'Earrings: Ear Cuff Dragon Gold',
+    'Earrings: Earrings Stack',
+    'Earrings: Heart Blue',
+    'Earrings: Heart Pink',
+    'Earrings: Industrial Gold',
+    'Earrings: Industrial Magenta',
+    'Earrings: Industrial Silver',
+    'Earrings: None',
+    'Earrings: Pearl',
+    'Earrings: Piercings Gold',
+    'Earrings: Piercings Silver',
+    'Earrings: Punk Stack',
+    'Earrings: Star Blue',
+    'Earrings: Star Green',
+    'Earrings: Star Pink',
+    'Earrings: Star Teal',
+    'Eyebrows: Dazed',
+    'Eyebrows: Exotic',
+    'Eyebrows: Innocent',
+    'Eyebrows: Misunderstood',
+    'Eyebrows: Natural',
+    'Eyebrows: Neutral',
+    'Eyebrows: Punk',
+    'Eyebrows: Purple',
+    'Eyebrows: Sulky',
+    'Eyes: Ahegao Hearts',
+    'Eyes: Ahegao Neon Star',
+    'Eyes: Ahegao Stars',
+    'Eyes: Ahegao X',
+    'Eyes: Brown',
+    'Eyes: Cat',
+    'Eyes: Clover',
+    'Eyes: Green',
+    'Eyes: Heart',
+    'Eyes: Heart Green',
+    'Eyes: Laser Eyes',
+    'Eyes: Regular',
+    'Eyes: Star',
+    'Eyes: Strange Animal',
+    'Eyes: Wink',
+    'Eyes: X',
+    'Eyewear: Chic Blue',
+    'Eyewear: Chic Orange',
+    'Eyewear: Chic Purple',
+    'Eyewear: Chic Red',
+    'Eyewear: Clubber Black',
+    'Eyewear: Clubber Red',
+    'Eyewear: Edgy Cyan',
+    'Eyewear: Edgy Pink',
+    'Eyewear: Edgy Regular',
+    'Eyewear: Edgy Yellow',
+    'Eyewear: Goggles Blue',
+    'Eyewear: Goggles Green',
+    'Eyewear: Goggles Orange',
+    'Eyewear: Goggles Pink',
+    'Eyewear: Goggles Regular',
+    'Eyewear: Hyper Black',
+    'Eyewear: Hyper Coral',
+    'Eyewear: Hyper Green',
+    'Eyewear: Hyper Indigo',
+    'Eyewear: Hyper Lime',
+    'Eyewear: None',
+    'Eyewear: Specs Black',
+    'Eyewear: Specs Pink',
+    'Eyewear: Star Cyan-Pink',
+    'Eyewear: Star Orange-Green',
+    'Eyewear: Star Pink-Blue',
+    'Hair: Black',
+    'Hair: Candy Purple',
+    'Hair: Cyan',
+    'Hair: Dirty Blonde',
+    'Hair: Gray',
+    'Hair: Green',
+    'Hair: Magenta',
+    'Hair: Orange',
+    'Hair: Purple',
+    'Hair: Rainbow',
+    'Hair: Red',
+    'Hair: Regular',
+    'Hair: Scarlet',
+    'Hair: Yellow',
+    'Headwear: AK Crown Gold',
+    'Headwear: AK Crown Platinum',
+    'Headwear: AK Crown Rose Gold',
+    'Headwear: AK Tiara Gold',
+    'Headwear: AK Tiara Platinum',
+    'Headwear: AK Tiara Rose Gold',
+    'Headwear: Beret Green',
+    'Headwear: Beret Indigo',
+    'Headwear: Beret Magenta',
+    'Headwear: Cat Ears',
+    'Headwear: Cat Headset',
+    'Headwear: Circlet Gold',
+    'Headwear: Hair Clip Star',
+    'Headwear: Hair Pins Black',
+    'Headwear: Hair Pins Cyan',
+    'Headwear: Hair Pins Pink',
+    'Headwear: Hair Pins Yellow',
+    'Headwear: Halo Black',
+    'Headwear: Halo Gold',
+    'Headwear: Halo Pink',
+    'Headwear: Horns Blue',
+    'Headwear: Horns Magenta',
+    'Headwear: Magenta Cosplay',
+    'Headwear: None',
+    'Headwear: Puft Hair Clip',
+    'Headwear: Rabbit Hood',
+    'Headwear: Trucker Cap Koncept',
+    'Headwear: Trucker Cap Send Nudes',
+    'Headwear: Trucker Cap TLJ',
+    'Headwear: Trucker Cap Ultra Rare Bloody',
+    'Headwear: Trucker Cap Ultra Rare Classic',
+    'Headwear: Trucker Cap Ultra Rare Rainbow',
+    'Mouth: Ahegao Blue',
+    'Mouth: Ahegao Red',
+    'Mouth: ASMR',
+    'Mouth: Bubblegum Green',
+    'Mouth: Bubblegum Pink',
+    'Mouth: Cat Smile',
+    'Mouth: Laughing Orange',
+    'Mouth: Laughing Pink',
+    'Mouth: Lip Bite Hard',
+    'Mouth: Lip Bite Pink',
+    'Mouth: Lip Bite Red',
+    'Mouth: Lollipop In',
+    'Mouth: Lollipop Out Blue',
+    'Mouth: Lollipop Out Pink',
+    'Mouth: Mask Black',
+    'Mouth: Mask Green',
+    'Mouth: Mask Pink',
+    'Mouth: Mask Purple',
+    'Mouth: Oni Pink',
+    'Mouth: Oni Yellow',
+    'Mouth: Open Green',
+    'Mouth: Open Pink',
+    'Mouth: Open Tongue Out Pink',
+    'Mouth: Open Tongue Out Red',
+    'Mouth: Pierced Lip',
+    'Mouth: Pout Orange',
+    'Mouth: Pout Pink',
+    'Mouth: Regular Gold',
+    'Mouth: Regular Green',
+    'Mouth: Regular Pink',
+    'Mouth: Smile Pink',
+    'Mouth: Smile Purple',
+    'Mouth: Tongue Lick Pink',
+    'Mouth: Tongue Lick Red',
+    'Mouth: Tongue Out Pink',
+    'Mouth: Vamp Green',
+    'Mouth: Vamp Red',
+    'Necklace: Bmac',
+    'Necklace: Chain Champs Elite',
+    'Necklace: Chain Champs Gold',
+    'Necklace: Chain Champs Rose Gold',
+    'Necklace: Choker Gold',
+    'Necklace: Choker Heart',
+    'Necklace: Composer',
+    'Necklace: Dog Tag 22',
+    'Necklace: Dog Tag B00N',
+    'Necklace: Dog Tag Lewdie',
+    'Necklace: Heart',
+    'Necklace: Lewdie',
+    'Necklace: Momoko',
+    'Necklace: Noble',
+    'Necklace: None',
+    'Necklace: Snow Flake Blue',
+    'Necklace: Snow Flake Pink',
+    'Necklace: Sparkly Star',
+    'Necklace: Token Girls',
+    'Necklace: Yin Yang',
+    'Skin: Flushed',
+    'Skin: Freckles',
+    'Skin: Regular',
+    'Skin: Scars',
+    'Skin: Tattoo Cute',
+    'Skin: Tattoo Edgy',
+    'Skin: Tattoo Goth',
+    'Skin: Tattoo Serpent',
+    'Skin: Tattoo Sleeves',
+    'Skin: Tattoo Sukebe',
+    'Name: Lewdie-1',
+    'Name: Lewdie-2',
+    'Name: Lewdie-3',
+    'Name: Lewdie-4',
+    'Name: Lewdie-5',
+    'Name: Lewdie-6',
+    'Name: Lewdie-7',
+    'Name: Lewdie-8',
+    'Name: Lewdie-9',
+    'Name: Lewdie-10',
+    'Name: Lewdie-11',
+    'Name: Lewdie-12',
+    'Name: Lewdie-13',
+    'Name: Lewdie-14',
+    'Name: Lewdie-15',
+    'Name: Lewdie-16',
+    'Name: Lewdie-17',
+    'Name: Lewdie-18',
+    'Name: Lewdie-19',
+    'Name: Lewdie-20',
+    'Name: Lewdie-21',
+    'Name: Lewdie-22',
+    'Name: Lewdie-23',
+    'Name: Lewdie-24',
+    'Name: Lewdie-25',
+    'Name: Lewdie-26',
+    'Name: Lewdie-27',
+    'Name: Lewdie-28',
+    'Name: Lewdie-29',
+    'Name: Lewdie-30',
+    'Name: Lewdie-31',
+    'Name: Lewdie-32',
+    'Name: Lewdie-33',
+    'Name: Lewdie-34',
+    'Name: Lewdie-35',
+    'Name: Lewdie-36',
+    'Name: Lewdie-37',
+    'Name: Lewdie-38',
+    'Name: Lewdie-39',
+    'Name: Lewdie-40',
+    'Name: Lewdie-41',
+    'Name: Lewdie-42',
+    'Name: Lewdie-43',
+    'Name: Lewdie-44',
+    'Name: Lewdie-45',
+    'Name: Lewdie-46',
+    'Name: Lewdie-47',
+    'Name: Lewdie-48',
+    'Name: Lewdie-49',
+    'Name: Lewdie-50',
+    'Name: Lewdie-51',
+    'Name: Lewdie-52',
+    'Name: Lewdie-53',
+    'Name: Lewdie-54',
+    'Name: Lewdie-55',
+    'Name: Lewdie-56',
+    'Name: Lewdie-57',
+    'Name: Lewdie-58',
+    'Name: Lewdie-59',
+    'Name: Lewdie-60',
+    'Name: Lewdie-61',
+    'Name: Lewdie-62',
+    'Name: Lewdie-63',
+    'Name: Lewdie-64',
+    'Name: Lewdie-65',
+    'Name: Lewdie-66',
+    'Name: Lewdie-67',
+    'Name: Lewdie-68',
+    'Name: Lewdie-69',
+    'Name: Lewdie-70',
+    'Name: Lewdie-71',
+    'Name: Lewdie-72',
+    'Name: Lewdie-73',
+    'Name: Lewdie-74',
+    'Name: Lewdie-75',
+    'Name: Lewdie-76',
+    'Name: Lewdie-77',
+    'Name: Lewdie-78',
+    'Name: Lewdie-79',
+    'Name: Lewdie-80',
+    'Name: Lewdie-81',
+    'Name: Lewdie-82',
+    'Name: Lewdie-83',
+    'Name: Lewdie-84',
+    'Name: Lewdie-85',
+    'Name: Lewdie-86',
+    'Name: Lewdie-87',
+    'Name: Lewdie-88',
+    'Name: Lewdie-89',
+    'Name: Lewdie-90',
+    'Name: Lewdie-91',
+    'Name: Lewdie-92',
+    'Name: Lewdie-93',
+    'Name: Lewdie-94',
+    'Name: Lewdie-95',
+    'Name: Lewdie-96',
+    'Name: Lewdie-97',
+    'Name: Lewdie-98',
+    'Name: Lewdie-99',
+    'Name: Lewdie-100',
+    'Name: Lewdie-101',
+    'Name: Lewdie-102',
+    'Name: Lewdie-103',
+    'Name: Lewdie-104',
+    'Name: Lewdie-105',
+    'Name: Lewdie-106',
+    'Name: Lewdie-107',
+    'Name: Lewdie-108',
+    'Name: Lewdie-109',
+    'Name: Lewdie-110',
+    'Name: Lewdie-111',
+    'Name: Lewdie-112',
+    'Name: Lewdie-113',
+    'Name: Lewdie-114',
+    'Name: Lewdie-115',
+    'Name: Lewdie-116',
+    'Name: Lewdie-117',
+    'Name: Lewdie-118',
+    'Name: Lewdie-119',
+    'Name: Lewdie-120',
+    'Name: Lewdie-121',
+    'Name: Lewdie-122',
+    'Name: Lewdie-123',
+    'Name: Lewdie-124',
+    'Name: Lewdie-125',
+    'Name: Lewdie-126',
+    'Name: Lewdie-127',
+    'Name: Lewdie-128',
+    'Name: Lewdie-129',
+    'Name: Lewdie-130',
+    'Name: Lewdie-131',
+    'Name: Lewdie-132',
+    'Name: Lewdie-133',
+    'Name: Lewdie-134',
+    'Name: Lewdie-135',
+    'Name: Lewdie-136',
+    'Name: Lewdie-137',
+    'Name: Lewdie-138',
+    'Name: Lewdie-139',
+    'Name: Lewdie-140',
+    'Name: Lewdie-141',
+    'Name: Lewdie-142',
+    'Name: Lewdie-143',
+    'Name: Lewdie-144',
+    'Name: Lewdie-145',
+    'Name: Lewdie-146',
+    'Name: Lewdie-147',
+    'Name: Lewdie-148',
+    'Name: Lewdie-149',
+    'Name: Lewdie-150',
+    'Name: Lewdie-151',
+    'Name: Lewdie-152',
+    'Name: Lewdie-153',
+    'Name: Lewdie-154',
+    'Name: Lewdie-155',
+    'Name: Lewdie-156',
+    'Name: Lewdie-157',
+    'Name: Lewdie-158',
+    'Name: Lewdie-159',
+    'Name: Lewdie-160',
+    'Name: Lewdie-161',
+    'Name: Lewdie-162',
+    'Name: Lewdie-163',
+    'Name: Lewdie-164',
+    'Name: Lewdie-165',
+    'Name: Lewdie-166',
+    'Name: Lewdie-167',
+    'Name: Lewdie-168',
+    'Name: Lewdie-169',
+    'Name: Lewdie-170',
+    'Name: Lewdie-171',
+    'Name: Lewdie-172',
+    'Name: Lewdie-173',
+    'Name: Lewdie-174',
+    'Name: Lewdie-175',
+    'Name: Lewdie-176',
+    'Name: Lewdie-177',
+    'Name: Lewdie-178',
+    'Name: Lewdie-179',
+    'Name: Lewdie-180',
+    'Name: Lewdie-181',
+    'Name: Lewdie-182',
+    'Name: Lewdie-183',
+    'Name: Lewdie-184',
+    'Name: Lewdie-185',
+    'Name: Lewdie-186',
+    'Name: Lewdie-187',
+    'Name: Lewdie-188',
+    'Name: Lewdie-189',
+    'Name: Lewdie-190',
+    'Name: Lewdie-191',
+    'Name: Lewdie-192',
+    'Name: Lewdie-193',
+    'Name: Lewdie-194',
+    'Name: Lewdie-195',
+    'Name: Lewdie-196',
+    'Name: Lewdie-197',
+    'Name: Lewdie-198',
+    'Name: Lewdie-199',
+    'Name: Lewdie-200',
+    'Name: Lewdie-201',
+    'Name: Lewdie-202',
+    'Name: Lewdie-203',
+    'Name: Lewdie-204',
+    'Name: Lewdie-205',
+    'Name: Lewdie-206',
+    'Name: Lewdie-207',
+    'Name: Lewdie-208',
+    'Name: Lewdie-209',
+    'Name: Lewdie-210',
+    'Name: Lewdie-211',
+    'Name: Lewdie-212',
+    'Name: Lewdie-213',
+    'Name: Lewdie-214',
+    'Name: Lewdie-215',
+    'Name: Lewdie-216',
+    'Name: Lewdie-217',
+    'Name: Lewdie-218',
+    'Name: Lewdie-219',
+    'Name: Lewdie-220',
+    'Name: Lewdie-221',
+    'Name: Lewdie-222',
+    'Name: Lewdie-223',
+    'Name: Lewdie-224',
+    'Name: Lewdie-225',
+    'Name: Lewdie-226',
+    'Name: Lewdie-227',
+    'Name: Lewdie-228',
+    'Name: Lewdie-229',
+    'Name: Lewdie-230',
+    'Name: Lewdie-231',
+    'Name: Lewdie-232',
+    'Name: Lewdie-233',
+    'Name: Lewdie-234',
+    'Name: Lewdie-235',
+    'Name: Lewdie-236',
+    'Name: Lewdie-237',
+    'Name: Lewdie-238',
+    'Name: Lewdie-239',
+    'Name: Lewdie-240',
+    'Name: Lewdie-241',
+    'Name: Lewdie-242',
+    'Name: Lewdie-243',
+    'Name: Lewdie-244',
+    'Name: Lewdie-245',
+    'Name: Lewdie-246',
+    'Name: Lewdie-247',
+    'Name: Lewdie-248',
+    'Name: Lewdie-249',
+    'Name: Lewdie-250',
+    'Name: Lewdie-251',
+    'Name: Lewdie-252',
+    'Name: Lewdie-253',
+    'Name: Lewdie-254',
+    'Name: Lewdie-255',
+    'Name: Lewdie-256',
+    'Name: Lewdie-257',
+    'Name: Lewdie-258',
+    'Name: Lewdie-259',
+    'Name: Lewdie-260',
+    'Name: Lewdie-261',
+    'Name: Lewdie-262',
+    'Name: Lewdie-263',
+    'Name: Lewdie-264',
+    'Name: Lewdie-265',
+    'Name: Lewdie-266',
+    'Name: Lewdie-267',
+    'Name: Lewdie-268',
+    'Name: Lewdie-269',
+    'Name: Lewdie-270',
+    'Name: Lewdie-271',
+    'Name: Lewdie-272',
+    'Name: Lewdie-273',
+    'Name: Lewdie-274',
+    'Name: Lewdie-275',
+    'Name: Lewdie-276',
+    'Name: Lewdie-277',
+    'Name: Lewdie-278',
+    'Name: Lewdie-279',
+    'Name: Lewdie-280',
+    'Name: Lewdie-281',
+    'Name: Lewdie-282',
+    'Name: Lewdie-283',
+    'Name: Lewdie-284',
+    'Name: Lewdie-285',
+    'Name: Lewdie-286',
+    'Name: Lewdie-287',
+    'Name: Lewdie-288',
+    'Name: Lewdie-289',
+    'Name: Lewdie-290',
+    'Name: Lewdie-291',
+    'Name: Lewdie-292',
+    'Name: Lewdie-293',
+    'Name: Lewdie-294',
+    'Name: Lewdie-295',
+    'Name: Lewdie-296',
+    'Name: Lewdie-297',
+    'Name: Lewdie-298',
+    'Name: Lewdie-299',
+    'Name: Lewdie-300',
+    'Name: Lewdie-301',
+    'Name: Lewdie-302',
+    'Name: Lewdie-303',
+    'Name: Lewdie-304',
+    'Name: Lewdie-305',
+    'Name: Lewdie-306',
+    'Name: Lewdie-307',
+    'Name: Lewdie-308',
+    'Name: Lewdie-309',
+    'Name: Lewdie-310',
+    'Name: Lewdie-311',
+    'Name: Lewdie-312',
+    'Name: Lewdie-313',
+    'Name: Lewdie-314',
+    'Name: Lewdie-315',
+    'Name: Lewdie-316',
+    'Name: Lewdie-317',
+    'Name: Lewdie-318',
+    'Name: Lewdie-319',
+    'Name: Lewdie-320',
+    'Name: Lewdie-321',
+    'Name: Lewdie-322',
+    'Name: Lewdie-323',
+    'Name: Lewdie-324',
+    'Name: Lewdie-325',
+    'Name: Lewdie-326',
+    'Name: Lewdie-327',
+    'Name: Lewdie-328',
+    'Name: Lewdie-329',
+    'Name: Lewdie-330',
+    'Name: Lewdie-331',
+    'Name: Lewdie-332',
+    'Name: Lewdie-333',
+    'Name: Lewdie-334',
+    'Name: Lewdie-335',
+    'Name: Lewdie-336',
+    'Name: Lewdie-337',
+    'Name: Lewdie-338',
+    'Name: Lewdie-339',
+    'Name: Lewdie-340',
+    'Name: Lewdie-341',
+    'Name: Lewdie-342',
+    'Name: Lewdie-343',
+    'Name: Lewdie-344',
+    'Name: Lewdie-345',
+    'Name: Lewdie-346',
+    'Name: Lewdie-347',
+    'Name: Lewdie-348',
+    'Name: Lewdie-349',
+    'Name: Lewdie-350',
+    'Name: Lewdie-351',
+    'Name: Lewdie-352',
+    'Name: Lewdie-353',
+    'Name: Lewdie-354',
+    'Name: Lewdie-355',
+    'Name: Lewdie-356',
+    'Name: Lewdie-357',
+    'Name: Lewdie-358',
+    'Name: Lewdie-359',
+    'Name: Lewdie-360',
+    'Name: Lewdie-361',
+    'Name: Lewdie-362',
+    'Name: Lewdie-363',
+    'Name: Lewdie-364',
+    'Name: Lewdie-365',
+    'Name: Lewdie-366',
+    'Name: Lewdie-367',
+    'Name: Lewdie-368',
+    'Name: Lewdie-369',
+    'Name: Lewdie-370',
+    'Name: Lewdie-371',
+    'Name: Lewdie-372',
+    'Name: Lewdie-373',
+    'Name: Lewdie-374',
+    'Name: Lewdie-375',
+    'Name: Lewdie-376',
+    'Name: Lewdie-377',
+    'Name: Lewdie-378',
+    'Name: Lewdie-379',
+    'Name: Lewdie-380',
+    'Name: Lewdie-381',
+    'Name: Lewdie-382',
+    'Name: Lewdie-383',
+    'Name: Lewdie-384',
+    'Name: Lewdie-385',
+    'Name: Lewdie-386',
+    'Name: Lewdie-387',
+    'Name: Lewdie-388',
+    'Name: Lewdie-389',
+    'Name: Lewdie-390',
+    'Name: Lewdie-391',
+    'Name: Lewdie-392',
+    'Name: Lewdie-393',
+    'Name: Lewdie-394',
+    'Name: Lewdie-395',
+    'Name: Lewdie-396',
+    'Name: Lewdie-397',
+    'Name: Lewdie-398',
+    'Name: Lewdie-399',
+    'Name: Lewdie-400',
+    'Name: Lewdie-401',
+    'Name: Lewdie-402',
+    'Name: Lewdie-403',
+    'Name: Lewdie-404',
+    'Name: Lewdie-405',
+    'Name: Lewdie-406',
+    'Name: Lewdie-407',
+    'Name: Lewdie-408',
+    'Name: Lewdie-409',
+    'Name: Lewdie-410',
+    'Name: Lewdie-411',
+    'Name: Lewdie-412',
+    'Name: Lewdie-413',
+    'Name: Lewdie-414',
+    'Name: Lewdie-415',
+    'Name: Lewdie-416',
+    'Name: Lewdie-417',
+    'Name: Lewdie-418',
+    'Name: Lewdie-419',
+    'Name: Lewdie-420',
+    'Name: Lewdie-421',
+    'Name: Lewdie-422',
+    'Name: Lewdie-423',
+    'Name: Lewdie-424',
+    'Name: Lewdie-425',
+    'Name: Lewdie-426',
+    'Name: Lewdie-427',
+    'Name: Lewdie-428',
+    'Name: Lewdie-429',
+    'Name: Lewdie-430',
+    'Name: Lewdie-431',
+    'Name: Lewdie-432',
+    'Name: Lewdie-433',
+    'Name: Lewdie-434',
+    'Name: Lewdie-435',
+    'Name: Lewdie-436',
+    'Name: Lewdie-437',
+    'Name: Lewdie-438',
+    'Name: Lewdie-439',
+    'Name: Lewdie-440',
+    'Name: Lewdie-441',
+    'Name: Lewdie-442',
+    'Name: Lewdie-443',
+    'Name: Lewdie-444',
+    'Name: Lewdie-445',
+    'Name: Lewdie-446',
+    'Name: Lewdie-447',
+    'Name: Lewdie-448',
+    'Name: Lewdie-449',
+    'Name: Lewdie-450',
+    'Name: Lewdie-451',
+    'Name: Lewdie-452',
+    'Name: Lewdie-453',
+    'Name: Lewdie-454',
+    'Name: Lewdie-455',
+    'Name: Lewdie-456',
+    'Name: Lewdie-457',
+    'Name: Lewdie-458',
+    'Name: Lewdie-459',
+    'Name: Lewdie-460',
+    'Name: Lewdie-461',
+    'Name: Lewdie-462',
+    'Name: Lewdie-463',
+    'Name: Lewdie-464',
+    'Name: Lewdie-465',
+    'Name: Lewdie-466',
+    'Name: Lewdie-467',
+    'Name: Lewdie-468',
+    'Name: Lewdie-469',
+    'Name: Lewdie-470',
+    'Name: Lewdie-471',
+    'Name: Lewdie-472',
+    'Name: Lewdie-473',
+    'Name: Lewdie-474',
+    'Name: Lewdie-475',
+    'Name: Lewdie-476',
+    'Name: Lewdie-477',
+    'Name: Lewdie-478',
+    'Name: Lewdie-479',
+    'Name: Lewdie-480',
+    'Name: Lewdie-481',
+    'Name: Lewdie-482',
+    'Name: Lewdie-483',
+    'Name: Lewdie-484',
+    'Name: Lewdie-485',
+    'Name: Lewdie-486',
+    'Name: Lewdie-487',
+    'Name: Lewdie-488',
+    'Name: Lewdie-489',
+    'Name: Lewdie-490',
+    'Name: Lewdie-491',
+    'Name: Lewdie-492',
+    'Name: Lewdie-493',
+    'Name: Lewdie-494',
+    'Name: Lewdie-495',
+    'Name: Lewdie-496',
+    'Name: Lewdie-497',
+    'Name: Lewdie-498',
+    'Name: Lewdie-499',
+    'Name: Lewdie-500',
+    'Name: Lewdie-501',
+    'Name: Lewdie-502',
+    'Name: Lewdie-503',
+    'Name: Lewdie-504',
+    'Name: Lewdie-505',
+    'Name: Lewdie-506',
+    'Name: Lewdie-507',
+    'Name: Lewdie-508',
+    'Name: Lewdie-509',
+    'Name: Lewdie-510',
+    'Name: Lewdie-511',
+    'Name: Lewdie-512',
+    'Name: Lewdie-513',
+    'Name: Lewdie-514',
+    'Name: Lewdie-515',
+    'Name: Lewdie-516',
+    'Name: Lewdie-517',
+    'Name: Lewdie-518',
+    'Name: Lewdie-519',
+    'Name: Lewdie-520',
+    'Name: Lewdie-521',
+    'Name: Lewdie-522',
+    'Name: Lewdie-523',
+    'Name: Lewdie-524',
+    'Name: Lewdie-525',
+    'Name: Lewdie-526',
+    'Name: Lewdie-527',
+    'Name: Lewdie-528',
+    'Name: Lewdie-529',
+    'Name: Lewdie-530',
+    'Name: Lewdie-531',
+    'Name: Lewdie-532',
+    'Name: Lewdie-533',
+    'Name: Lewdie-534',
+    'Name: Lewdie-535',
+    'Name: Lewdie-536',
+    'Name: Lewdie-537',
+    'Name: Lewdie-538',
+    'Name: Lewdie-539',
+    'Name: Lewdie-540',
+    'Name: Lewdie-541',
+    'Name: Lewdie-542',
+    'Name: Lewdie-543',
+    'Name: Lewdie-544',
+    'Name: Lewdie-545',
+    'Name: Lewdie-546',
+    'Name: Lewdie-547',
+    'Name: Lewdie-548',
+    'Name: Lewdie-549',
+    'Name: Lewdie-550',
+    'Name: Lewdie-551',
+    'Name: Lewdie-552',
+    'Name: Lewdie-553',
+    'Name: Lewdie-554',
+    'Name: Lewdie-555'
+    ]
 
       let database = [
   {
@@ -1802,7 +3248,7 @@
     "background": "Blue",
     "backcarry": "None",
     "skin": "Tattoo Goth",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "Dog Tag B00N",
     "hair": "Regular",
     "earrings": "None",
@@ -3091,7 +4537,7 @@
     "eyes": "Regular",
     "mouth": "Mask Green",
     "eyewear": "Star Cyan-Pink",
-    "headwear": "Magnta Cosplay",
+    "headwear": "Magenta Cosplay",
     "BG": 0.13873873873873874,
     "BGQty": 77,
     "BCPercent": 0.016216216216216217,
@@ -3388,7 +4834,7 @@
     "background": "Magenta",
     "backcarry": "None",
     "skin": "Tattoo Sleeves",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -3945,7 +5391,7 @@
     "eyes": "Regular",
     "mouth": "Oni Pink",
     "eyewear": "Star Orange-Green",
-    "headwear": "Magnta Cosplay",
+    "headwear": "Magenta Cosplay",
     "BG": 0.09009009009009009,
     "BGQty": 50,
     "BCPercent": 0.04864864864864865,
@@ -5226,7 +6672,7 @@
     "eyes": "Regular",
     "mouth": "Oni Yellow",
     "eyewear": "Edgy Pink",
-    "headwear": "Magnta Cosplay",
+    "headwear": "Magenta Cosplay",
     "BG": 0.0990990990990991,
     "BGQty": 55,
     "BCPercent": 0.6990990990990991,
@@ -5462,7 +6908,7 @@
     "background": "Yellow",
     "backcarry": "None",
     "skin": "Tattoo Edgy",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -9862,7 +11308,7 @@
     "eyes": "Regular",
     "mouth": "Oni Pink",
     "eyewear": "None",
-    "headwear": "Magnta Cosplay",
+    "headwear": "Magenta Cosplay",
     "BG": 0.0990990990990991,
     "BGQty": 55,
     "BCPercent": 0.016216216216216217,
@@ -13758,7 +15204,7 @@
     "background": "Gray",
     "backcarry": "None",
     "skin": "Scars",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "Chain Champs Gold",
     "hair": "Regular",
     "earrings": "None",
@@ -16999,7 +18445,7 @@
     "eyes": "Regular",
     "mouth": "Mask Black",
     "eyewear": "None",
-    "headwear": "Magnta Cosplay",
+    "headwear": "Magenta Cosplay",
     "BG": 0.11891891891891893,
     "BGQty": 66,
     "BCPercent": 0.6990990990990991,
@@ -17967,7 +19413,7 @@
     "background": "Yellow",
     "backcarry": "None",
     "skin": "Tattoo Cute",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -18272,7 +19718,7 @@
     "background": "Red",
     "backcarry": "AR Blue Camo",
     "skin": "Regular",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -19553,7 +20999,7 @@
     "background": "Cyan",
     "backcarry": "None",
     "skin": "Regular",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "Chain Champs Gold",
     "hair": "Regular",
     "earrings": "None",
@@ -30716,7 +32162,7 @@
     "background": "Red",
     "backcarry": "None",
     "skin": "Scars",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -31143,7 +32589,7 @@
     "background": "Yellow",
     "backcarry": "None",
     "skin": "Regular",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
@@ -31509,7 +32955,7 @@
     "background": "Peach",
     "backcarry": "None",
     "skin": "Regular",
-    "clothes": "Crop Top Magnta",
+    "clothes": "Crop Top Magenta",
     "necklace": "None",
     "hair": "Regular",
     "earrings": "None",
