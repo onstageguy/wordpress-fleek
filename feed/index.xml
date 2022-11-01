@@ -10,8 +10,8 @@
 <channel>
 	<title>Lewd Momoko</title>
 	<atom:link href="http://localhost/skillcrush/feed/" rel="self" type="application/rss+xml" />
-	<link>/</link>
-	<description>NSFW NFTS on WAX. Community Driven Project.</description>
+	<link>https://lewdmomoko.com/</link>
+	<description>Lewd Momoko is NSFW NFTS community driven collection from WAX blockchain. Lewdie is NSFW PFP Series with a complex trait structure.</description>
 	<lastBuildDate>Sat, 18 Sep 2021 19:22:26 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
@@ -23,7 +23,7 @@
 <image>
 	<url>/wp-content/uploads/2021/09/cropped-Lewd-Momoko-Logo-32x32.png</url>
 	<title>Lewd Momoko</title>
-	<link>/</link>
+	<link>https://lewdmomoko.com/</link>
 	<width>32</width>
 	<height>32</height>
 </image> 
