@@ -627,6 +627,53 @@
       input[type="search"]::-webkit-search-results-decoration {
         display: none;
       }
+
+      .lewdierank-tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;     
+      }
+
+      .lewdierank-tooltip .lewdierank-tooltiptext {
+        visibility: hidden;
+        width: 400px;
+        max-width: 90vw;
+        background-color: #ccc;
+        font-size: 18px;
+        font-weight: 400;
+        color: var(--lewdierank-dark-pink);
+        text-align: center;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 2px solid var(--lewdierank-bright-pink);
+        text-align: left;
+
+        /* Black Glow: */
+        -webkit-box-shadow:0px 2px 27px 4px rgba(0,0,0,0.5);
+        -moz-box-shadow: 0px 2px 27px 4px rgba(0,0,0,0.5);
+        box-shadow: 0px 2px 27px 4px rgba(0,0,0,0.5);
+      
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: 38px;
+        right: 10px;
+      }
+
+      .lewdierank-tooltip .lewdierank-tooltiptext::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        right: 50px;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent transparent var(--lewdierank-bright-pink) transparent;
+      }
+
+      .lewdierank-tooltip:hover .lewdierank-tooltiptext {
+        visibility: visible;
+      }
     </style>
   </head>
   <body>
@@ -964,11 +1011,28 @@
         + "<th>Account</th>"
         + "<th>#Lewdies</th>"
         + "<th>Total Score</th>"
+        + "<th class='lewdierank-tooltip'>Spicy Lvl <i class='fa-regular fa-circle-question'></i>"
+        + "<span class='lewdierank-tooltiptext'>"
+        + "<strong>HOT</strong>: Owns between 2 and 4 lewdies<br/>"
+        + "<strong>EXTRA HOT</strong>: Owns between 5 and 8 Lewdies<br/>"
+        + "<strong>EXTREMELY HOT</strong>: Owns 9 or more Lewdies</span>"
+        + "</th>"
         + "</tr></thead>";
         + "<tbody>";
 
         leaderboardStats.map((leader) => {
            let thisLeaderRank = "N/A";
+           let spicyLevel = "";
+
+           if (leader.owner !== poolAddress && leader.count >= 2) {
+            spicyLevel = "<i class='fa-solid fa-pepper-hot'>";
+           }
+           if (leader.owner !== poolAddress && leader.count >= 5) {
+            spicyLevel += "<i class='fa-solid fa-pepper-hot'>";
+           }
+           if (leader.owner !== poolAddress && leader.count >= 9) {
+            spicyLevel += "<i class='fa-solid fa-pepper-hot'>";
+           }
 
            if (leader.owner !== poolAddress) {
             leaderCount += 1;
@@ -980,6 +1044,7 @@
             + "<td>" + leader.owner + "</td>"
             + "<td>" + leader.count + "</td>"
             + "<td>" + leader.score.toFixed(2) + "</td>"
+            + "<td>" + spicyLevel + "</i>"
             + "</tr>";
 
             leaderboardHtml += leaderRow;
@@ -1374,29 +1439,65 @@
 
               // Override some values for testing
               // TODO: Remove this testing block after testing is complete
-              if (isTesting) {
-                if (database[i].name == 'Lewdie-#463') {
-                  ownerItem.owner = 'composerhodl';
-                }
-                if (database[i].name == 'Lewdie-#515') {
-                  ownerItem.owner = 'composerhodl';
-                }
-                if (database[i].name == 'Lewdie-#211') {
-                  ownerItem.owner = 'p1cqw.wam';
-                }
-                if (database[i].name == 'Lewdie-#81') {
-                  ownerItem.owner = '1fdau.wam';
-                }
-                if (database[i].name == 'Lewdie-#275') {
-                  ownerItem.owner = 'cqcau.wam';
-                }
-                if (database[i].name == 'Lewdie-#165') {
-                  ownerItem.owner = 'ouqqu.wam';
-                }
-                if (database[i].name == 'Lewdie-#214') {
-                  ownerItem.owner = 'hglqw.wam';
-                }
-              }
+              // if (isTesting) {
+              //   if (database[i].name == 'Lewdie-#463') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#515') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#111') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#112') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#113') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#114') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#115') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#116') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#117') {
+              //     ownerItem.owner = 'composerhodl';
+              //   }
+              //   if (database[i].name == 'Lewdie-#211') {
+              //     ownerItem.owner = 'p1cqw.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#212') {
+              //     ownerItem.owner = 'p1cqw.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#213') {
+              //     ownerItem.owner = 'p1cqw.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#215') {
+              //     ownerItem.owner = 'p1cqw.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#216') {
+              //     ownerItem.owner = 'p1cqw.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#81') {
+              //     ownerItem.owner = '1fdau.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#69') {
+              //     ownerItem.owner = '1fdau.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#275') {
+              //     ownerItem.owner = 'cqcau.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#165') {
+              //     ownerItem.owner = 'ouqqu.wam';
+              //   }
+              //   if (database[i].name == 'Lewdie-#214') {
+              //     ownerItem.owner = 'hglqw.wam';
+              //   }
+              // }
 
               // Calculate the unpacked rank
               let unpackedRank = null;
