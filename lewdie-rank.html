@@ -1831,19 +1831,19 @@
               let listItem = listingResults[i];
 
               for (let j = 0; j < listItem.assets.length; j++) {
-                if (listItem.assets[j].template.template_id === '614845' && listItem.listing_symbol === 'WAX') {
+                if (listItem.assets[j].template.template_id === '614845' && listItem.price.token_symbol === 'WAX') {
                   let asset_id = listItem.assets[j].asset_id;
-                  let list_price = listItem.listing_price / 100000000;
+                  let list_price = listItem.price.amount / 100000000;
                   let sale_id = listItem.sale_id;
 
-                  for (let i = 0; i < database.length; i++) {
-                    let dbItem = database[i];
+                  for (let k = 0; k < database.length; k++) {
+                    let dbItem = database[k];
 
                     // Update the database record
                     if (dbItem.asset_id === asset_id) {
-                      database[i].isListed = true;
-                      database[i].listPrice = list_price;
-                      database[i].sale_id = sale_id;
+                      database[k].isListed = true;
+                      database[k].listPrice = list_price;
+                      database[k].sale_id = sale_id;
 
                       // Update the Lewdie card forsaleinfo
                       let edition = dbItem.edition;
