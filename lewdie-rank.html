@@ -1257,7 +1257,7 @@
             thisLeaderRank = '#' + leaderCount;
           }
 
-          const leaderRow = "<tr onclick='showAccount(&quot;" + leader.owner + "&quot;);'>" + '<td>' + thisLeaderRank + '</td>' + '<td class="leaderboard-ownertd ownername-' + leader.owner.replace('.', '-dot-') + '" id="leaderboard-ownertd-' + leader.owner.replace('.', '-dot-') + '">' + leader.owner + "<span class='lewdie-club-member-tooltiptext' onclick='event.stopPropagation();'>" + 'Lewdie Club Member <a target="_blank" href="https://lewdpaper.lewdmomoko.com/lewdie/lewdie-club">learn more</a></span>' + '</td>' + '<td>' + leader.count + '</td>' + '<td>' + leader.score.toFixed(2) + '</td>' + '<td>' + spicyLevel + '</i>' + '</tr>';
+          const leaderRow = "<tr onclick='showAccount(&quot;" + leader.owner + "&quot;);'>" + '<td>' + thisLeaderRank + '</td>' + '<td class="leaderboard-ownertd ownername-' + leader.owner.replace(/\./g, '-dot-') + '" id="leaderboard-ownertd-' + leader.owner.replace('.', '-dot-') + '">' + leader.owner + "<span class='lewdie-club-member-tooltiptext' onclick='event.stopPropagation();'>" + 'Lewdie Club Member <a target="_blank" href="https://lewdpaper.lewdmomoko.com/lewdie/lewdie-club">learn more</a></span>' + '</td>' + '<td>' + leader.count + '</td>' + '<td>' + leader.score.toFixed(2) + '</td>' + '<td>' + spicyLevel + '</i>' + '</tr>';
 
           leaderboardHtml += leaderRow;
         });
@@ -1773,22 +1773,11 @@
             memberResults = res.data;
             //console.log('memberResults = ', memberResults);
 
-            // Override some values for testing
-            // TODO: Comment out or remove this testing block after testing is complete
-            if (isTesting && memberResults.length === 0) {
-              memberResults[0] = { owner: 'jollewaxacc1' };
-              memberResults[1] = { owner: 'ixray.wam' };
-              memberResults[2] = { owner: 'newtalentnft' };
-              memberResults[3] = { owner: 'irbaboonxwax' };
-              memberResults[4] = { owner: 'r2bak.wam' };
-              memberResults[5] = { owner: 'devbotsvault' };
-            }
-
             for (let i = 0; i < memberResults.length; i++) {
               let memberItem = memberResults[i];
 
               if (memberItem.owner !== poolAddress) {
-                $('.ownername-' + memberItem.owner.replace('.', '-dot-')).addClass('lewdie-club-member');
+                $('.ownername-' + (memberItem.owner ?? '').replace(/\./g, '-dot-')).addClass('lewdie-club-member');
               }
             }
           },
